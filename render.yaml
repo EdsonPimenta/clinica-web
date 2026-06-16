@@ -1,0 +1,69 @@
+# Render Blueprint (Infraestrutura como Código)
+# Descreve banco de dados, backend e frontend do clinica-web.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# IMPORTANTE: troque os campos `repo` abaixo pela URL do SEU repositório
+# no GitHub (ex.: https://github.com/EdsonPimenta/clinica-web) e ajuste a
+# `branch` se necessário.
+databases:
+  - name: clinica-db
+    databaseName: clinica_db
+    user: clinica
+    plan: free
+    region: oregon
+
+services:
+  # ===== Backend: Spring Boot (Docker) =====
+  - type: web
+    name: clinica-backend
+    runtime: docker
+    repo: https://github.com/EdsonPimenta/clinica-web
+    branch: main
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /api/profissionais
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: clinica-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: clinica-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: clinica-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: clinica-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: clinica-db
+          property: password
+
+  # ===== Frontend: React (Static Site) =====
+  - type: web
+    name: clinica-frontend
+    runtime: static
+    repo: https://github.com/EdsonPimenta/clinica-web
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    envVars:
+      # Injeta o host público do backend; o api.js normaliza para https://host/api
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: clinica-backend
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

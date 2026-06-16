@@ -1,0 +1,121 @@
+name: CI/CD Pipeline - Clinica Web (Java + React)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ========================================
+  # JOB 1: TESTES DO BACKEND (Java/Spring Boot)
+  # ========================================
+  test-backend:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: clinica_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Testes Unitarios (JUnit 5 + Mockito)
+        run: mvn test -Dtest="*ControllerTest" -B
+
+      - name: Testes de Integracao (Spring Boot + PostgreSQL)
+        run: mvn test -Dtest="IntegracaoTest" -B
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: clinica_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+
+      - name: Cobertura de codigo (JaCoCo)
+        run: |
+          mvn verify -B
+          echo "Relatorio de cobertura gerado em target/site/jacoco/"
+
+  # ========================================
+  # JOB 2: TESTES DO FRONTEND (React)
+  # ========================================
+  test-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Testes unitarios React (Jest)
+        run: npm test -- --watchAll=false --passWithNoTests
+
+      - name: Build de producao
+        run: npm run build
+
+  # ========================================
+  # JOB 3: BUILD & TESTES DE ACEITACAO (CD)
+  # ========================================
+  deploy:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Build das imagens Docker
+        run: docker compose build
+
+      - name: Testes de Aceitacao (E2E)
+        run: |
+          docker compose up -d
+          echo "Aguardando subir backend + frontend + postgres..."
+          sleep 25
+          curl -f http://localhost:8080/api/profissionais || exit 1
+          curl -f http://localhost:3000 || exit 1
+          echo "Testes de aceitacao passaram!"
+          docker compose down
+
+      # O deploy de producao e feito pelo Render via Blueprint (render.yaml)
+      # ao detectar o push na branch conectada.
+      - name: Deploy continuo (Render)
+        run: |
+          echo "CI aprovado. O Render observa a branch conectada e publica"
+          echo "banco + backend + frontend automaticamente via render.yaml."
