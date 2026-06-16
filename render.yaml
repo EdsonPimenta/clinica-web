@@ -1,10 +1,6 @@
 # Render Blueprint (Infraestrutura como Código)
 # Descreve banco de dados, backend e frontend do clinica-web.
 # Docs: https://render.com/docs/blueprint-spec
-#
-# IMPORTANTE: troque os campos `repo` abaixo pela URL do SEU repositório
-# no GitHub (ex.: https://github.com/EdsonPimenta/clinica-web) e ajuste a
-# `branch` se necessário.
 databases:
   - name: clinica-db
     databaseName: clinica_db
