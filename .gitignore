@@ -22,5 +22,6 @@ frontend/build/
 # Java / Backend
 target/
 
-# Markdown / docs
+# Markdown / docs (mantem o README, ignora os demais .md)
 *.md
+!README.md
