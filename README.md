@@ -1,9 +1,10 @@
-# Clínica Web - Material Educacional
+# Clínica Web 
 
-Sistema de **Clínica Web** para demonstração do ciclo completo de desenvolvimento de software
+Sistema de **Clínica Web**
 (projeto → configuração → pipeline → execução → deploy → infraestrutura → publicação).
 
-Requisito: **Profissional de Saúde**, **Atendimento** e **Exame de Laboratório**.
+O Clínica Web é um sistema de gerenciamento para clínicas de saúde. Ele centraliza o cadastro de profissionais de saúde (psicólogos, fisioterapeutas e médicos), o registro de atendimentos realizados por esses profissionais e os exames de laboratório ligados a cada atendimento.
+Na prática, permite inserir, consultar (por nome, id ou categoria), alterar e excluir profissionais, além de agendar/registrar atendimentos, com data, horário, queixa e receita/recomendação, e anexar exames com seus resultados.
 
 ## Tecnologias
 
