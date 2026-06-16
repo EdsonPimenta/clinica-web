@@ -56,7 +56,6 @@ clinica-web/
 ├── docker-compose.yml
 ├── render.yaml                   # Infraestrutura como Código (Render)
 ├── .github/workflows/ci-cd.yml   # Pipeline CI/CD
-└── aula_cicd_clinica.html        # Página da aula (apresentação clicável)
 ```
 
 ## Como Executar (Desenvolvimento)
