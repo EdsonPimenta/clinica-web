@@ -54,9 +54,6 @@ services:
     staticPublishPath: build
     envVars:
       # URL pública do backend (o api.js normaliza para https://host/api).
-      # IMPORTANTE: nao use `fromService property: host` aqui — no Render isso
-      # devolve o host interno/privado (sem .onrender.com), que o navegador
-      # do usuario nao resolve. Use a URL publica completa do backend:
       - key: REACT_APP_API_URL
         value: https://clinica-backend-1tra.onrender.com
     routes:
