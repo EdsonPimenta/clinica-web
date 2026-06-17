@@ -53,7 +53,7 @@ services:
     buildCommand: npm install && CI=false npm run build
     staticPublishPath: build
     envVars:
-      # URL pública do backend (o api.js normaliza para https://host/api).
+      # URL publica do backend (o api.js normaliza para https://host/api).
       - key: REACT_APP_API_URL
         value: https://clinica-backend-1tra.onrender.com
     routes:
