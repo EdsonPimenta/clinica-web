@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { loadWithRetry } from '../services/api';
 
 // Carrega uma lista da API com tratamento de loading, erro e cold start (Render free).
-export default function useList(fetchFn, deps = []) {
+export default function useList(fetchFn) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [waking, setWaking] = useState(false);
@@ -23,10 +23,9 @@ export default function useList(fetchFn, deps = []) {
       setLoading(false);
       setWaking(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => { reload(); /* eslint-disable-next-line */ }, deps);
+  useEffect(() => { reload(); }, [reload]);
 
   return { data, loading, waking, error, reload, setData };
 }
