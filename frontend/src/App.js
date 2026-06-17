@@ -1,43 +1,29 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import ProfissionalList from './components/ProfissionalList';
-import ProfissionalForm from './components/ProfissionalForm';
-import AtendimentoList from './components/AtendimentoList';
-import AtendimentoForm from './components/AtendimentoForm';
-import ExameList from './components/ExameList';
-import ExameForm from './components/ExameForm';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastProvider } from './context/ToastContext';
+import AppLayout from './components/layout/AppLayout';
+import Dashboard from './pages/Dashboard';
+import Profissionais from './pages/Profissionais';
+import Atendimentos from './pages/Atendimentos';
+import Exames from './pages/Exames';
+import Configuracoes from './pages/Configuracoes';
 import './App.css';
 
-function App() {
+export default function App() {
   return (
-    <Router>
-      <div className="App">
-        <nav className="navbar">
-          <h1>🏥 Clínica Web</h1>
-          <div className="nav-links">
-            <Link to="/profissionais">Profissionais</Link>
-            <Link to="/atendimentos">Atendimentos</Link>
-            <Link to="/exames">Exames</Link>
-          </div>
-        </nav>
-
-        <main className="container">
-          <Routes>
-            <Route path="/" element={<ProfissionalList />} />
-            <Route path="/profissionais" element={<ProfissionalList />} />
-            <Route path="/profissionais/novo" element={<ProfissionalForm />} />
-            <Route path="/profissionais/editar/:id" element={<ProfissionalForm />} />
-            <Route path="/atendimentos" element={<AtendimentoList />} />
-            <Route path="/atendimentos/novo" element={<AtendimentoForm />} />
-            <Route path="/atendimentos/editar/:id" element={<AtendimentoForm />} />
-            <Route path="/exames" element={<ExameList />} />
-            <Route path="/exames/novo" element={<ExameForm />} />
-            <Route path="/exames/editar/:id" element={<ExameForm />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/profissionais" element={<Profissionais />} />
+            <Route path="/atendimentos" element={<Atendimentos />} />
+            <Route path="/exames" element={<Exames />} />
+            <Route path="/configuracoes" element={<Configuracoes />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   );
 }
-
-export default App;

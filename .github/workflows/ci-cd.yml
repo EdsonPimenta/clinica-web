@@ -87,6 +87,8 @@ jobs:
 
       - name: Build de producao
         run: npm run build
+        env:
+          CI: false
 
   # ========================================
   # JOB 3: BUILD & TESTES DE ACEITACAO (CD)

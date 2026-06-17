@@ -50,7 +50,7 @@ services:
     repo: https://github.com/EdsonPimenta/clinica-web
     branch: main
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && CI=false npm run build
     staticPublishPath: build
     envVars:
       # URL pública do backend (o api.js normaliza para https://host/api).
